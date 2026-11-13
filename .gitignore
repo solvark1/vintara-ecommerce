@@ -1,0 +1,31 @@
+# Secrets and local runtime configuration
+.env
+.env.*
+!.env.example
+**/cloud.env
+**/crm.env
+**/private/
+**/includes/configure.php
+*.key
+*.pfx
+*.p12
+# Database dumps and archives
+*.sql
+!source/**/install/*.sql
+*.sql.gz
+*.zip
+*.tar.gz
+backups/
+# Runtime data and local evidence
+*.log
+*.jpg
+verificaciones*.txt
+crm/verificacion*.txt
+azure/*.json
+**/includes/work/*
+**/admin/backups/*
+**/.github/
+.azure/
+.vscode/
+__pycache__/
+*.pyc

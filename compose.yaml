@@ -1,0 +1,52 @@
+name: phoenixcart-local
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: phoenix
+      MYSQL_USER: phoenix
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      TZ: America/Costa_Rica
+    volumes:
+      - database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+  web:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8082:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: phoenix
+      DB_USER: phoenix
+      DB_PASSWORD: ${DB_PASSWORD}
+      STORE_URL: http://localhost:8082
+      DEMO_SEED_ENABLED: "true"
+      DEMO_CUSTOMER_PASSWORD: ${DEMO_CUSTOMER_PASSWORD}
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      TZ: America/Costa_Rica
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - images:/var/www/html/images
+      - work:/var/www/html/includes/work
+      - backups:/var/www/html/admin/backups
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/index.php"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+volumes:
+  database:
+  images:
+  work:
+  backups:
+

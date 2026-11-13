@@ -1,0 +1,189 @@
+<?php
+/*
+  $Id$
+
+  CE Phoenix, E-Commerce made Easy
+  https://phoenixcart.org
+
+  Copyright (c) 2021 Phoenix Cart
+
+  Released under the GNU General Public License
+*/
+
+class hook_admin_siteWide_hMenu {
+
+  public $version = '1.0.0';
+
+  public static function sort_box_links($a, $b) {
+    return strcasecmp($a['title'], $b['title']);
+  }
+
+  public function listen_injectBodyStart() {
+    if (basename(Request::get_page()) !== 'login.php') {
+      $cl_box_groups = [];
+
+      if ($dir = @dir(DIR_FS_ADMIN . 'includes/boxes')) {
+        $files = [];
+
+        while ($file = $dir->read()) {
+          if (!is_dir("{$dir->path}/$file") && (pathinfo($file, PATHINFO_EXTENSION) === 'php')) {
+            $files[] = $file;
+          }
+        }
+
+        $dir->close();
+
+        natcasesort($files);
+
+        foreach ( $files as $file ) {
+          $path = DIR_FS_ADMIN . "includes/languages/{$_SESSION['language']}/modules/boxes/$file";
+          if ( file_exists($path) ) {
+            include_once $path;
+          }
+
+          include_once "{$dir->path}/$file";
+        }
+      }
+
+      usort($cl_box_groups, function ($a, $b) {
+        $hasSortA = isset($a['sort']);
+        $hasSortB = isset($b['sort']);
+        
+        if ($hasSortA && $hasSortB) {
+          return $a['sort'] <=> $b['sort'];
+        }
+        if ($hasSortA) {
+          return -1;
+        }
+        if ($hasSortB) {
+          return 1;
+        }
+        return strcasecmp(strip_tags($a['heading']), strip_tags($b['heading']));
+      });
+
+      foreach ( $cl_box_groups as &$group ) {
+        if (!empty($group['apps']) && is_array($group['apps'])) {
+          usort($group['apps'], 'hook_admin_siteWide_hMenu::sort_box_links');
+        }
+      }
+
+      $n = 1;
+      $start = $center = $end = '';
+
+      foreach ($cl_box_groups as $groups) {
+        $item = '';
+        
+        $area = $groups['nav'] ?? 'start';
+        $type = $groups['type'] ?? 'dropdown';
+
+        switch ($type) {
+          case 'link':
+            $app = $groups['apps'][0] ?? null;
+
+            if (!empty($app['link'])) {
+              $class = $app['class'] ?? 'dropdown-item';
+              $attrs = '';
+
+              if (!empty($app['data']) && is_array($app['data'])) {
+                foreach ($app['data'] as $k => $v) {
+                  $attrs .= ' ' . $k . '="' . htmlspecialchars($v) . '"';
+                }
+              }
+
+              $item .= '<li class="nav-item d-flex align-items-center">';
+                $item .= '<a class="' . $class . '" href="' . $app['link'] . '"' . $attrs . '>'
+                  . $app['title'] .
+                '</a>';
+              $item .= '</li>';
+            }
+            break;
+          case 'dropdown':
+            $item .= '<li class="nav-item dropdown">';
+              $item .= '<a class="nav-link dropdown-toggle" href="#" id="navbar_' . $n . '" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+                $item .= $groups['heading'];
+              $item .= '</a>';
+
+              $align = ($area === 'end') ? ' dropdown-menu-end' : '';
+              $item .= '<ul class="dropdown-menu' . $align . '" aria-labelledby="navbar_' . $n . '">';
+
+              foreach ($groups['apps'] as $app) {
+                $item .= '<li><a class="dropdown-item" href="' . $app['link'] . '">' . $app['title'] . '</a></li>';
+              }
+
+              $item .= '</ul>';
+            $item .= '</li>' . PHP_EOL;
+            break;
+
+          default:
+            break;
+        }
+
+        if (!empty($item)) {
+          if ($area === 'start') {
+            $start .= $item;
+          } elseif ($area === 'center') {
+            $center .= $item;
+          } else {
+            $end .= $item;
+          }
+        }
+
+        $n++;
+      }
+
+      $icon = $GLOBALS['Admin']->image('images/CE-Phoenix-30-30.png', [], 'Phoenix v' . Versions::get('Phoenix'), 30, 30);
+      
+      $output = '';
+      
+      $output .= '<nav class="navbar navbar-expand-xl navbar-dark bg-dark d-print-none sticky-top" aria-label="Main Menu">';
+        $output .= '<div class="container-fluid">';
+          $output .= '<a class="navbar-brand" href="' . $GLOBALS['Admin']->link('index.php') . '">' . $icon->set_responsive(false) . '</a>';
+          $output .= '<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarAdmin" aria-controls="navbarAdmin" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>';
+          $output .= '<div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="navbarAdmin" aria-labelledby="navbarAdminLabel">';
+            $output .= '<div class="offcanvas-header">';
+              $output .= '<h5 class="offcanvas-title" id="navbarAdminLabel">Main Menu</h5>';
+              $output .= '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>';
+            $output .= '</div>';
+            $output .= '<div class="offcanvas-body">';
+              if ($start !== '') {
+                $output .= '<ul class="navbar-nav me-auto pe-3">';
+                  $output .= $start;
+                $output .= '</ul>';
+              }
+              if ($center !== '') {
+                $output .= '<ul class="navbar-nav mx-auto pe-3">';
+                  $output .= $center;
+                $output .= '</ul>';
+              }
+              if ($end !== '') {
+                $output .= '<ul class="navbar-nav ms-auto pe-3">';
+                  $output .= $end;
+                $output .= '</ul>';
+              }
+            $output .= '</div>';
+          $output .= '</div>';
+        $output .= '</div>';
+      $output .= '</nav>';
+      
+      $output .= '<div class="col bg-light mb-1 border-bottom d-print-none d-flex align-items-center gap-2 py-1 px-3">';
+        $output .= '<div class="input-group flex-grow-0" style="max-width:250px;">';
+          $output .= '<span class="input-group-text"><i class="fas fa-keyboard text-secondary"></i></span>';
+          $output .= '<input data-command-launcher type="text" class="form-control form-control-sm shadow-none" placeholder="Ctrl+K">';
+        $output .= '</div>';
+        $output .= '<ul class="nav ms-auto">';
+          $output .= '<li class="nav-item"><a class="nav-link" target="_blank" rel="noreferrer" href="https://phoenixcart.org/forum/">' . HEADER_TITLE_PHOENIX_CLUB . '</a></li>';
+          $output .= '<li class="nav-item"><a class="nav-link" target="_blank" rel="noreferrer" href="https://phoenixcart.org/phoenixcartwiki/index.php">' . HEADER_TITLE_PHOENIX_WIKI . '</a></li>';
+          $output .= '<li class="nav-item"><a class="nav-link" target="_blank" rel="noreferrer" href="https://phoenixcart.org/forum/addons/">' . HEADER_TITLE_CERTIFIED_ADDONS . '</a></li>';
+          $output .= '<li class="nav-item"><a class="nav-link" target="_blank" rel="noreferrer" href="https://phoenixcart.org/forum/app.php/developers">' . HEADER_TITLE_CERTIFIED_DEVELOPERS . '</a></li>';
+          $output .= '<li class="nav-item"><a class="nav-link" href="' . $GLOBALS['Admin']->catalog('') . '">' . HEADER_TITLE_ONLINE_CATALOG . '</a></li>';
+          $output .= '<li class="nav-item"><a class="nav-link text-danger" href="' . $GLOBALS['Admin']->link('login.php', ['action' => 'logoff']) . '">'
+                   . sprintf(HEADER_TITLE_LOGOFF, $_SESSION['admin']['username'])
+                   . '</a></li>';
+        $output .= '</ul>';
+      $output .= '</div>';
+
+      return $output;
+    }
+  }
+
+}

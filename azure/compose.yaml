@@ -1,0 +1,69 @@
+name: terra-nostra
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: phoenix
+      MYSQL_USER: phoenix
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      TZ: America/Costa_Rica
+    volumes:
+      - database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+  web:
+    build:
+      context: ..
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_NAME: phoenix
+      DB_USER: phoenix
+      DB_PASSWORD: ${DB_PASSWORD}
+      STORE_URL: https://${STORE_HOST}
+      APP_ENV: azure
+      DEMO_SEED_ENABLED: "true"
+      DEMO_CUSTOMER_PASSWORD: ${DEMO_CUSTOMER_PASSWORD}
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      TZ: America/Costa_Rica
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - images:/var/www/html/images
+      - work:/var/www/html/includes/work
+      - backups:/var/www/html/admin/backups
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/index.php"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      STORE_HOST: ${STORE_HOST}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - certificates:/data
+      - proxy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+volumes:
+  database:
+  images:
+  work:
+  backups:
+  certificates:
+  proxy_config:
+

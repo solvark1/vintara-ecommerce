@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="720" viewBox="0 0 600 720" role="img" aria-label="Orilla Atlántica, ilustración de botella">
+<defs><linearGradient id="g"><stop stop-color="#101b16"/><stop offset=".28" stop-color="#9f9d55"/><stop offset=".5" stop-color="#9f9d55"/><stop offset="1" stop-color="#17251e"/></linearGradient><radialGradient id="bg"><stop stop-color="#fffdf8"/><stop offset="1" stop-color="#eee8dd"/></radialGradient></defs>
+<rect width="600" height="720" fill="url(#bg)"/><ellipse cx="300" cy="653" rx="108" ry="14" fill="#3d2820" opacity=".14"/>
+<path d="M266 81h68v125c0 35 53 48 53 95v327q0 24-24 24H237q-24 0-24-24V301c0-47 53-60 53-95z" fill="url(#g)"/>
+<path d="M232 320v294" stroke="#fff" stroke-width="8" opacity=".13"/><rect x="263" y="77" width="74" height="94" rx="5" fill="#92804f"/><path d="M266 146h68" stroke="#d8bc80" stroke-width="2"/>
+<rect x="225" y="342" width="150" height="202" rx="2" fill="#f5efdf"/><rect x="234" y="351" width="132" height="184" fill="none" stroke="#92804f" opacity=".5"/>
+<text x="300" y="382" text-anchor="middle" font-family="Georgia,serif" font-size="19" letter-spacing="3" fill="#92804f">VINTARA</text>
+<path d="M259 416l20-18 21 23 19-27 24 22M258 424h85" fill="none" stroke="#92804f" stroke-width="1.5"/>
+<text x="300" y="451" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#392c2a">Orilla Atlántica</text>
+<text x="300" y="474" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#6e6158">Albariño</text>
+<text x="300" y="500" text-anchor="middle" font-family="Georgia,serif" font-size="15" fill="#92804f">2025</text>
+<text x="300" y="522" text-anchor="middle" font-family="Arial,sans-serif" font-size="8" fill="#6e6158">750 ml · España</text></svg>

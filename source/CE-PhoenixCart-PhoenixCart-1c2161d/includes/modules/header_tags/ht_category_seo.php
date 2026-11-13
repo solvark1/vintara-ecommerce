@@ -1,0 +1,53 @@
+<?php
+/*
+  $Id$
+
+  CE Phoenix, E-Commerce made Easy
+  https://phoenixcart.org
+
+  Copyright (c) 2021 Phoenix Cart
+
+  Released under the GNU General Public License
+*/
+
+  class ht_category_seo extends abstract_executable_module {
+
+    const CONFIG_KEY_BASE = 'MODULE_HEADER_TAGS_CATEGORY_SEO_';
+
+    public function __construct() {
+      parent::__construct(__FILE__);
+    }
+
+    public function execute() {
+      if ( ($GLOBALS['current_category_id'] > 0) && ('index.php' === basename(Request::get_page())) ) {
+        $category_seo_description = $GLOBALS['category_tree']->get($GLOBALS['current_category_id'], 'seo_description');
+
+        if (!Text::is_empty($category_seo_description)) {
+          $GLOBALS['Template']->add_block('<meta name="description" content="' . Text::output($category_seo_description) . '">' . PHP_EOL, $this->group);
+        }
+      }
+    }
+
+    protected function get_parameters() {
+      return [
+        $this->config_key_base . 'STATUS' => [
+          'title' => 'Enable Category Meta Module',
+          'value' => 'True',
+          'desc' => 'Do you want to allow Category Meta Tags to be added to the page header?',
+          'set_func' => "Config::select_one(['True', 'False'], ",
+        ],
+        $this->config_key_base . 'DESCRIPTION_STATUS' => [
+          'title' => 'Display Category Meta Description',
+          'value' => 'True',
+          'desc' => "These help your site and your site's visitors.",
+          'set_func' => "Config::select_one(['True'], ",
+        ],
+        $this->config_key_base . 'SORT_ORDER' => [
+          'title' => 'Sort Order',
+          'value' => '0',
+          'desc' => 'Sort order of display. Lowest is displayed first.',
+        ],
+      ];
+    }
+
+  }
