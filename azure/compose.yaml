@@ -1,4 +1,4 @@
-name: terra-nostra
+name: vintara
 services:
   db:
     image: mysql:8.0

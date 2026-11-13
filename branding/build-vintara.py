@@ -78,7 +78,7 @@ hero_template='''<?php $catalogUrl=$GLOBALS['Linker']->build('products_new.php')
 ''',encoding='utf-8')
 for path in overlay.rglob('*.php'):
     text=path.read_text(encoding='utf-8-sig')
-    for a,b in [('Terra Nostra','Vintara S.A.'),('Lo bueno nace de la tierra','Del viñedo a tu copa | Vintara'),('Nuestro mercado','Nuestra colección de vinos'),("'Mercado'","'Vinos'"),('Una selección para tu mesa','Una selección con carácter'),('Discover a wide selection of products and enjoy easy online shopping with great customer service.','Descubrí vinos tintos, blancos, rosados y espumantes. Uvas, añadas, regiones y maridajes en Vintara.')]: text=text.replace(a,b)
+    for a,b in [('Vintara','Vintara S.A.'),('Lo bueno nace de la tierra','Del viñedo a tu copa | Vintara'),('Nuestro mercado','Nuestra colección de vinos'),("'Mercado'","'Vinos'"),('Una selección para tu mesa','Una selección con carácter'),('Discover a wide selection of products and enjoy easy online shopping with great customer service.','Descubrí vinos tintos, blancos, rosados y espumantes. Uvas, añadas, regiones y maridajes en Vintara.')]: text=text.replace(a,b)
     path.write_text(text,encoding='utf-8')
 css_path=overlay/'templates/override/static/user.css'
 css=css_path.read_text(encoding='utf-8-sig').split('/* VINTARA OVERRIDES */')[0]

@@ -8,5 +8,5 @@ packages:
   - python3
 runcmd:
   - [systemctl, enable, --now, docker]
-  - [mkdir, -p, /opt/terra-nostra]
-  - [chown, azureuser:azureuser, /opt/terra-nostra]
+  - [mkdir, -p, /opt/vintara]
+  - [chown, azureuser:azureuser, /opt/vintara]

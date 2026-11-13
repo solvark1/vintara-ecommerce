@@ -61,7 +61,7 @@ try {
   vi('vintara_wines',['products_id'=>$id,'category'=>$w['category'],'grape'=>$w['grape'],'vintage'=>$w['vintage'],'region'=>$w['region'],'country'=>$w['country'],'winery'=>$w['winery'],'volume_ml'=>750,'abv'=>$w['abv'],'tasting_notes'=>$w['notes'],'pairing'=>$w['pairing'],'serving_temperature'=>$w['serving'],'storage'=>$w['storage']]);
  }
  // Archive only the previous seeded products. No historical names or totals change.
- $db->query("UPDATE products p JOIN demo_seed_entities e ON e.entity_id=p.products_id AND e.entity_type='product' AND e.seed_version='terra-nostra-v1' SET p.products_status=0");
+ $db->query("UPDATE products p JOIN demo_seed_entities e ON e.entity_id=p.products_id AND e.entity_type='product' AND e.seed_version='vintara-v1' SET p.products_status=0");
  foreach(['STORE_NAME'=>'Vintara S.A.','STORE_OWNER'=>'Vintara S.A.','STORE_OWNER_EMAIL_ADDRESS'=>'hola@vintara.example.test','EMAIL_FROM'=>'Vintara <hola@vintara.example.test>','STORE_LOGO'=>'vintara/logo.svg','MINI_LOGO'=>'vintara/logo.svg','STORE_ADDRESS'=>"Paraíso, Cartago\nCosta Rica",'STORE_PHONE'=>'','SEND_EMAILS'=>'false','MODULE_CONTENT_CARD_PRODUCTS_MAX_DISPLAY'=>'8','VINTARA_CATALOG_V1'=>'1'] as $key=>$value) vc($key,$value);
  $db->commit();
  foreach(glob('/var/www/html/includes/work/*.cache') as $cache) unlink($cache);

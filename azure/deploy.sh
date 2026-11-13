@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-cd /opt/terra-nostra
+cd /opt/vintara
 chmod 600 azure/cloud.env
 compose=(docker compose --env-file azure/cloud.env -f azure/compose.yaml)
 "${compose[@]}" up -d db
@@ -18,6 +18,6 @@ done
 "${compose[@]}" exec -T web chown -R www-data:www-data /var/www/html/images
 "${compose[@]}" up -d --wait
 "${compose[@]}" exec -T web php /opt/phoenix/verify-demo.php
-printf '0 8 * * * root /usr/bin/python3 /opt/terra-nostra/azure/backup.py >> /var/log/terra-nostra-backup.log 2>&1\n' > /etc/cron.d/terra-nostra-backup
-chmod 644 /etc/cron.d/terra-nostra-backup
+printf '0 8 * * * root /usr/bin/python3 /opt/vintara/azure/backup.py >> /var/log/vintara-backup.log 2>&1\n' > /etc/cron.d/vintara-backup
+chmod 644 /etc/cron.d/vintara-backup
 "${compose[@]}" ps

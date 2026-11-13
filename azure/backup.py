@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Back up the Azure store and CRM using VM managed identity; no account keys."""
 import datetime, gzip, json, os, pathlib, subprocess, urllib.request
-root=pathlib.Path('/opt/terra-nostra')
+root=pathlib.Path('/opt/vintara')
 storage=(root/'azure/backup-storage.txt').read_text().strip()
 now=datetime.datetime.now(datetime.timezone.utc)
 folder=root/'backups';folder.mkdir(exist_ok=True);os.chmod(folder,0o700)
-file=folder/('terra-nostra-'+now.strftime('%Y%m%dT%H%M%SZ')+'.sql.gz')
-command=['docker','compose','--env-file',str(root/'azure/cloud.env'),'-f',str(root/'azure/compose.yaml'),'exec','-T','db','sh','-c','MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump --no-tablespaces --single-transaction --databases -uroot phoenix terra_nostra_crm']
+file=folder/('vintara-'+now.strftime('%Y%m%dT%H%M%SZ')+'.sql.gz')
+command=['docker','compose','--env-file',str(root/'azure/cloud.env'),'-f',str(root/'azure/compose.yaml'),'exec','-T','db','sh','-c','MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump --no-tablespaces --single-transaction --databases -uroot phoenix vintara_crm']
 with gzip.open(file,'wb') as output:
     os.chmod(file,0o600)
     process=subprocess.Popen(command,stdout=subprocess.PIPE)
@@ -20,5 +20,5 @@ with urllib.request.urlopen(request,timeout=120) as response:
     if response.status!=201: raise RuntimeError('Cloud upload failed')
 print('Backup uploaded: '+file.name)
 # Keep one week of local copies; Azure keeps the off-VM copies.
-for old in folder.glob('terra-nostra-*.sql.gz'):
+for old in folder.glob('vintara-*.sql.gz'):
     if old.stat().st_mtime<now.timestamp()-7*86400:old.unlink()

@@ -19,14 +19,14 @@ function insertRow(string $table, array $data): int {
 }
 function entity(string $type, string $key, string $table, string $pk, callable $create): int {
     global $db;
-    $found=rows('SELECT entity_id FROM demo_seed_entities WHERE seed_version=? AND entity_type=? AND entity_key=?',['terra-nostra-v1',$type,$key]);
+    $found=rows('SELECT entity_id FROM demo_seed_entities WHERE seed_version=? AND entity_type=? AND entity_key=?',['vintara-v1',$type,$key]);
     if ($found) {
         $id=(int)$found[0]['entity_id'];
         if (!rows("SELECT `$pk` FROM `$table` WHERE `$pk`=?",[$id])) { throw new RuntimeException("Seed entity $type/$key was removed; no automatic recreation to preserve manual changes."); }
         return $id;
     }
     $id=$create();
-    insertRow('demo_seed_entities',['seed_version'=>'terra-nostra-v1','entity_type'=>$type,'entity_key'=>$key,'entity_id'=>$id]);
+    insertRow('demo_seed_entities',['seed_version'=>'vintara-v1','entity_type'=>$type,'entity_key'=>$key,'entity_id'=>$id]);
     return $id;
 }
 function config(string $key,string $value): void {
@@ -35,12 +35,12 @@ function config(string $key,string $value): void {
 function money(int $cents): string { return '$'.number_format($cents/100,2,'.',','); }
 $db->query('CREATE TABLE IF NOT EXISTS demo_seed_runs (seed_version varchar(64) PRIMARY KEY, anchor_date date NOT NULL, completed_at datetime NOT NULL) ENGINE=InnoDB');
 $db->query('CREATE TABLE IF NOT EXISTS demo_seed_entities (seed_version varchar(64) NOT NULL,entity_type varchar(32) NOT NULL,entity_key varchar(64) NOT NULL,entity_id int NOT NULL,PRIMARY KEY(seed_version,entity_type,entity_key)) ENGINE=InnoDB');
-if (!$db->query("SELECT GET_LOCK('terra_nostra_seed',10) AS acquired")->fetch_assoc()['acquired']) { throw new RuntimeException('Another seed is running.'); }
+if (!$db->query("SELECT GET_LOCK('vintara_seed',10) AS acquired")->fetch_assoc()['acquired']) { throw new RuntimeException('Another seed is running.'); }
 try {
     $db->begin_transaction();
-    $completed=rows('SELECT * FROM demo_seed_runs WHERE seed_version=?',['terra-nostra-v1']);
+    $completed=rows('SELECT * FROM demo_seed_runs WHERE seed_version=?',['vintara-v1']);
     if ($completed) {
-        echo "Terra Nostra demo already loaded. Existing data and edits preserved.\n";
+        echo "Vintara demo already loaded. Existing data and edits preserved.\n";
         $db->commit(); exit;
     }
     if (!getenv('DEMO_CUSTOMER_PASSWORD')) { throw new RuntimeException('DEMO_CUSTOMER_PASSWORD is required.'); }
@@ -54,7 +54,7 @@ try {
         [$key,$name,$image]=$cat;
         $categories[$key]=entity('category',$key,'categories','categories_id',function()use($name,$image,$i,$languageIds){
             $id=insertRow('categories',['categories_image'=>'sample/'.$image,'parent_id'=>0,'sort_order'=>($i+1)*10,'date_added'=>date('Y-m-d H:i:s')]);
-            foreach($languageIds as $lang) insertRow('categories_description',['categories_id'=>$id,'language_id'=>$lang,'categories_name'=>$name,'categories_description'=>'El sabor de compartir alimentos frescos. Catálogo de demostración Terra Nostra.']);
+            foreach($languageIds as $lang) insertRow('categories_description',['categories_id'=>$id,'language_id'=>$lang,'categories_name'=>$name,'categories_description'=>'El sabor de compartir alimentos frescos. Catálogo de demostración Vintara.']);
             return $id;
         });
     }
@@ -84,7 +84,7 @@ try {
         $model=sprintf('TN-DEMO-%03d',$i+1);
         $id=entity('product',$model,'products','products_id',function()use($i,$name,$image,$cents,$category,$description,$model,$categories,$languageIds,$anchor){
             $id=insertRow('products',['products_quantity'=>mt_rand(35,180),'products_model'=>$model,'products_image'=>'sample/'.$image,'products_price'=>$cents/100,'products_date_added'=>$anchor->modify('-'.(18-$i).' days')->format('Y-m-d 08:00:00'),'products_weight'=>str_contains($name,'2 kg')?2:(str_contains($name,'500 g')?0.5:1),'products_status'=>1,'products_tax_class_id'=>0,'products_ordered'=>0]);
-            foreach($languageIds as $lang) insertRow('products_description',['products_id'=>$id,'language_id'=>$lang,'products_name'=>$name,'products_description'=>'<p>'.$description.'</p><ul><li>Presentación: '.htmlspecialchars($name).'</li><li>Imágenes ilustrativas del catálogo original de Phoenix Cart.</li></ul><p class="text-muted small">Producto ficticio para una demostración académica. No se realizan ventas reales.</p>','products_seo_description'=>$description,'products_seo_title'=>$name.' | Terra Nostra']);
+            foreach($languageIds as $lang) insertRow('products_description',['products_id'=>$id,'language_id'=>$lang,'products_name'=>$name,'products_description'=>'<p>'.$description.'</p><ul><li>Presentación: '.htmlspecialchars($name).'</li><li>Imágenes ilustrativas del catálogo original de Phoenix Cart.</li></ul><p class="text-muted small">Producto ficticio para una demostración académica. No se realizan ventas reales.</p>','products_seo_description'=>$description,'products_seo_title'=>$name.' | Vintara']);
             insertRow('products_to_categories',['products_id'=>$id,'categories_id'=>$categories[$category]]);
             return $id;
         });
@@ -140,8 +140,8 @@ try {
         });
     }
     config('SEND_EMAILS','false');
-    insertRow('demo_seed_runs',['seed_version'=>'terra-nostra-v1','anchor_date'=>$anchor->format('Y-m-d'),'completed_at'=>date('Y-m-d H:i:s')]);
+    insertRow('demo_seed_runs',['seed_version'=>'vintara-v1','anchor_date'=>$anchor->format('Y-m-d'),'completed_at'=>date('Y-m-d H:i:s')]);
     $db->commit();
     echo "Demo completed: 18 products, 40 customers, 240 orders; anchor ".$anchor->format('Y-m-d').". No duplicates on rerun.\n";
 } catch(Throwable $e) { $db->rollback(); throw $e; }
-finally { $db->query("SELECT RELEASE_LOCK('terra_nostra_seed')"); }
+finally { $db->query("SELECT RELEASE_LOCK('vintara_seed')"); }

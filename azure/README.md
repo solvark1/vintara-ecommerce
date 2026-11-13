@@ -1,68 +1,19 @@
-# Terra Nostra en Azure
+# Vintara en Azure
 
+Consultar [VINTARA.md](../VINTARA.md) para inventario y verificaciones actuales.
+
+Grupo: `rg-vintara`. Máquina: `vm-vintara`. IP: `20.3.229.69`.
 Tienda: https://vintara-if6201-508832.westus2.cloudapp.azure.com/
 Panel: https://vintara-if6201-508832.westus2.cloudapp.azure.com/admin/
-Las credenciales exclusivas de Azure se guardan en private/ACCESO-AZURE.txt. No son las del entorno local.
 
-## Recursos
-- Suscripción: Azure subscription 1 (Free Trial, límite de gasto conservado).
-- Grupo: rg-vintara.
-- Región de la VM y almacenamiento: West US 2.
-- VM: vm-terra-nostra, tamaño Standard_B2s_v2 (2 vCPU, 8 GB RAM), Ubuntu 24.04.
-- Disco del sistema: Standard SSD de 32 GiB; los volúmenes de Docker se guardan allí.
-- Aplicación: Phoenix Cart + MySQL 8.0 + Caddy para HTTPS automático.
-- Cuenta de almacenamiento: stterranostra508832, StorageV2 con Data Lake Gen2 habilitado.
-- Contenedor privado backups para copias de MySQL.
+El servidor guarda el proyecto en `/opt/vintara`. Docker Compose ejecuta `vintara-db-1`, `vintara-web-1` y `vintara-proxy-1`. Las bases son `phoenix` (motor de tienda) y `vintara_crm`. No se expone MySQL públicamente.
 
-## Conexión con el enunciado
-La aplicación y la base transaccional están alojadas en Azure. MySQL no se expone públicamente.
-Un futuro extractor ejecutado dentro de la VM puede leer MySQL y escribir en el Data Lake mediante identidad administrada, sin abrir el puerto 3306.
-El CRM ya está creado como base separada terra_nostra_crm en el mismo servidor MySQL. Contiene 40 clientes vinculados a la tienda, 20 prospectos y 180 interacciones. Archivos CSV, ETL diario, Power BI e IA siguen pendientes. Consulta ../crm/README.md.
-El respaldo diario no sustituye al proceso ETL del proyecto.
+Red: `vnet-vintara`, `snet-vintara`, `nsg-vintara`, `nic-vintara`, `pip-vintara`. Disco: `disk-vintara`. Cuenta Data Lake Gen2: `stvintara508832`.
 
-## Operación
-- Abrir-Azure.cmd en la carpeta principal abre la tienda.
-- Iniciar-VM.cmd en esta carpeta inicia la VM si fue detenida.
-- Detener-VM.cmd desasigna la VM: la tienda deja de estar disponible y no se ejecutan sus tareas programadas.
-- Los comandos de esta carpeta requieren Azure CLI y una sesión autorizada.
-- Desasignar evita el cargo de cómputo; el disco y la IP pública pueden seguir generando cargos.
-- No eliminar VM, disco, grupo o volúmenes si se quiere conservar esta instalación.
+Los respaldos diarios a las 08:00 UTC (02:00 Costa Rica) se ejecutan mientras la VM esté encendida y se suben al contenedor privado `backups` mediante la identidad administrada de la VM. La identidad tiene Storage Blob Data Contributor únicamente sobre ese contenedor. No hay acceso por claves compartidas ni blobs públicos.
 
-## Costos
-Estimación orientativa de lista al desplegar: alrededor de USD 67/mes con cómputo encendido 24/7, disco Standard SSD de 32 GiB e IP pública Standard, más el uso de almacenamiento y tráfico. No es una factura ni una garantía del crédito restante; beneficios de cuenta y uso real pueden cambiar el cargo.
-Se mantiene el límite de gasto de la prueba gratuita. No se realizó conversión a pago por uso.
-Revisar saldo y fecha de vencimiento en Azure Cost Management. No asumir que los USD 200 se renuevan mensualmente.
+`Iniciar-VM.cmd` y `Detener-VM.cmd` usan el grupo y VM nuevos. Detener desasigna la VM y deja la tienda y tareas programadas fuera de servicio. Discos, almacenamiento e IP pueden generar cargos aunque la VM esté desasignada.
 
-## Archivos del servidor
-Carpeta /opt/terra-nostra. Compose: azure/compose.yaml. Variables privadas: azure/cloud.env.
-La clave SSH local está en private/terra-nostra y el host verificado en private/known_hosts.
-SSH está limitado a la IP pública que tenía esta computadora al desplegar. Si cambia la conexión, actualizar la regla AllowSSHFromOwner desde Azure.
-El acceso público a la tienda usa únicamente 80/443. La base permanece en la red de Docker.
+Para publicar código, usar `../Actualizar-Vintara-Azure.ps1`. No ejecutar `deploy.sh` sobre la instalación existente: corresponde a una restauración inicial. Las claves y variables necesarias están en `private/`, excluidas del repositorio público. No copiar secretos en issues, commits o capturas.
 
-## Respaldos
-azure/backup.py usa la identidad administrada de la VM para subir una copia SQL comprimida de phoenix y terra_nostra_crm al contenedor privado backups.
-La programación es a las 08:00 UTC (02:00 de Costa Rica) diariamente mientras la VM permanezca encendida.
-Registros: /var/log/terra-nostra-backup.log. Se conserva una semana de copias locales; las de Azure se conservan fuera de la VM.
-El permiso de la VM se limita a Storage Blob Data Contributor en ese contenedor.
-Las imágenes de la migración también están conservadas en el respaldo local private/images.tar.gz; la programación diaria actual respalda MySQL, no imágenes nuevas que se carguen después.
-
-## Reproducibilidad
-cloud-init.yaml instala Docker. deploy.sh restaura la base y las imágenes y arranca la aplicación.
-No volver a ejecutar deploy.sh sobre la tienda con actividad nueva: restaura la copia inicial y sobrescribe la base. Para cambios de código, reconstruir únicamente web con Docker Compose.
-Los archivos de private/ y los dumps SQL contienen información privada y no deben publicarse.
-
-## Verificación del despliegue
-- URL HTTPS pública con certificado válido y respuesta HTTP 200.
-- Cookies de sesión Secure, HttpOnly y SameSite=Lax.
-- Conservados el catálogo, imágenes, diseño y datos locales migrados.
-- Inicio de sesión de cliente y administrador comprobados con las contraseñas nuevas de Azure.
-- Compra completa con el cliente ficticio cliente01@example.test y pago contra entrega: pedido 241 por ₡4.125, sin cobro ni correo real.
-- 18 productos activos, 40 clientes y 241 pedidos (240 precargados más la compra de verificación).
-- Copia privada descargada de Azure Storage, hash idéntico y restauración en una base aislada: cantidades y sumas coinciden.
-- MySQL sin puerto público; entrada web por 80/443 y SSH restringido a la conexión del propietario.
-
-El proyecto permanece como entorno académico. No se configuraron cobros reales ni correo saliente. El certificado HTTPS se renueva automáticamente mientras Caddy pueda acceder a los puertos públicos y la VM esté operativa.
-
-- Reinicio real de la VM verificado: Docker y cron activos, servicios saludables, datos y acceso administrativo conservados.
-
-
+La tienda es académica: no realiza cobros ni envía correo real. ETL, BI e IA siguen pendientes; los respaldos no sustituyen al ETL.

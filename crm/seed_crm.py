@@ -2,9 +2,9 @@
 """Create and seed a simulated CRM alongside Phoenix, without changing store data."""
 import datetime,hashlib,json,pathlib,random,secrets,subprocess,sys
 from zoneinfo import ZoneInfo
-ROOT=pathlib.Path('/opt/terra-nostra')
+ROOT=pathlib.Path('/opt/vintara')
 COMPOSE=['docker','compose','--env-file',str(ROOT/'azure/cloud.env'),'-f',str(ROOT/'azure/compose.yaml')]
-DB='terra_nostra_crm';VERSION='terra-nostra-crm-v1'
+DB='vintara_crm';VERSION='vintara-crm-v1'
 def mysql(sql):
     command=COMPOSE+['exec','-T','db','sh','-c','MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot --default-character-set=utf8mb4 --batch --raw --skip-column-names']
     p=subprocess.run(command,input=sql.encode(),stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -20,9 +20,9 @@ def store_hash():
     p=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=True)
     return hashlib.sha256(p.stdout).hexdigest()
 before=store_hash()
-mysql('''CREATE DATABASE IF NOT EXISTS terra_nostra_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE TABLE IF NOT EXISTS terra_nostra_crm.seed_runs (version varchar(64) PRIMARY KEY,seeded_at datetime NOT NULL,anchor_date date NOT NULL) ENGINE=InnoDB;
-CREATE TABLE IF NOT EXISTS terra_nostra_crm.customers (
+mysql('''CREATE DATABASE IF NOT EXISTS vintara_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS vintara_crm.seed_runs (version varchar(64) PRIMARY KEY,seeded_at datetime NOT NULL,anchor_date date NOT NULL) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS vintara_crm.customers (
  crm_customer_id bigint unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
  crm_code varchar(32) NOT NULL UNIQUE,
  ecommerce_customer_id int NULL UNIQUE,
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS terra_nostra_crm.customers (
  registered_at datetime NOT NULL,last_contact_at datetime NULL,created_at datetime NOT NULL,
  INDEX idx_province(province),INDEX idx_segment(segment),INDEX idx_acquisition(acquisition_channel)
 ) ENGINE=InnoDB;
-CREATE TABLE IF NOT EXISTS terra_nostra_crm.interactions (
+CREATE TABLE IF NOT EXISTS vintara_crm.interactions (
  interaction_id bigint unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
  interaction_key varchar(64) NOT NULL UNIQUE,
  crm_customer_id bigint unsigned NOT NULL,
@@ -47,15 +47,15 @@ CREATE TABLE IF NOT EXISTS terra_nostra_crm.interactions (
  occurred_at datetime NOT NULL,
  outcome varchar(80) NOT NULL,
  notes text NOT NULL,
- CONSTRAINT fk_crm_interaction_customer FOREIGN KEY(crm_customer_id) REFERENCES terra_nostra_crm.customers(crm_customer_id),
+ CONSTRAINT fk_crm_interaction_customer FOREIGN KEY(crm_customer_id) REFERENCES vintara_crm.customers(crm_customer_id),
  INDEX idx_contact_date(occurred_at)
 ) ENGINE=InnoDB;''')
 secret_file=ROOT/'azure/crm.env'
 if not secret_file.exists():
-    secret_file.write_text('CRM_DATABASE='+DB+'\nCRM_USER=terra_crm\nCRM_PASSWORD='+secrets.token_hex(24)+'\nETL_USER=terra_etl\nETL_PASSWORD='+secrets.token_hex(24)+'\n')
+    secret_file.write_text('CRM_DATABASE='+DB+'\nCRM_USER=vintara_crm\nCRM_PASSWORD='+secrets.token_hex(24)+'\nETL_USER=vintara_etl\nETL_PASSWORD='+secrets.token_hex(24)+'\n')
     secret_file.chmod(0o600)
 env=dict(line.split('=',1) for line in secret_file.read_text().splitlines() if '=' in line)
-mysql("CREATE USER IF NOT EXISTS 'terra_crm'@'%' IDENTIFIED BY "+q(env['CRM_PASSWORD'])+"; GRANT SELECT,INSERT,UPDATE,DELETE ON terra_nostra_crm.* TO 'terra_crm'@'%'; CREATE USER IF NOT EXISTS 'terra_etl'@'%' IDENTIFIED BY "+q(env['ETL_PASSWORD'])+"; GRANT SELECT ON terra_nostra_crm.* TO 'terra_etl'@'%'; GRANT SELECT ON phoenix.* TO 'terra_etl'@'%';")
+mysql("CREATE USER IF NOT EXISTS 'vintara_crm'@'%' IDENTIFIED BY "+q(env['CRM_PASSWORD'])+"; GRANT SELECT,INSERT,UPDATE,DELETE ON vintara_crm.* TO 'vintara_crm'@'%'; CREATE USER IF NOT EXISTS 'vintara_etl'@'%' IDENTIFIED BY "+q(env['ETL_PASSWORD'])+"; GRANT SELECT ON vintara_crm.* TO 'vintara_etl'@'%'; GRANT SELECT ON phoenix.* TO 'vintara_etl'@'%';")
 if mysql('SELECT COUNT(*) FROM '+DB+'.seed_runs WHERE version='+q(VERSION))=='1':
     assert store_hash()==before,'Store changed while checking CRM seed'
     print('CRM already seeded; existing data and edits preserved.');sys.exit(0)

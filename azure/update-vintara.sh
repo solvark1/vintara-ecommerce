@@ -5,22 +5,22 @@ umask 077
 expected_sha=${1:?Expected release SHA256 is required}
 [[ "$expected_sha" =~ ^[a-fA-F0-9]{64}$ ]] || { echo 'Invalid release hash'; exit 1; }
 printf '%s  %s\n' "$expected_sha" /tmp/vintara-release.tar.gz | sha256sum --check --status
-cd /opt/terra-nostra
-exec 9>/opt/terra-nostra/.vintara-deploy.lock
+cd /opt/vintara
+exec 9>/opt/vintara/.vintara-deploy.lock
 flock -n 9 || { echo 'Another Vintara deployment is running'; exit 1; }
 dc() { docker compose --env-file azure/cloud.env -f azure/compose.yaml "$@"; }
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
-release="/opt/terra-nostra/backups/vintara-$stamp"
+release="/opt/vintara/backups/vintara-$stamp"
 mkdir -p "$release"
 # Take a complete private snapshot before any store change.
 tar -czf "$release/code.tar.gz" Dockerfile docker branding azure/compose.yaml
-dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot --single-transaction --no-tablespaces --add-drop-database --databases phoenix terra_nostra_crm' | gzip > "$release/database.sql.gz"
+dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot --single-transaction --no-tablespaces --add-drop-database --databases phoenix vintara_crm' | gzip > "$release/database.sql.gz"
 gzip -t "$release/database.sql.gz"
 oldimage=$(docker inspect --format '{{.Image}}' "$(dc ps -q web)")
 docker image tag "$oldimage" "vintara-rollback:$stamp"
 preserved() {
  dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot --no-tablespaces --compact --skip-comments --skip-extended-insert --order-by-primary --no-create-info phoenix customers customers_info address_book orders orders_products orders_products_attributes orders_status_history orders_total' | sha256sum | cut -d' ' -f1
- dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot --no-tablespaces --compact --skip-comments --skip-extended-insert --order-by-primary --no-create-info terra_nostra_crm' | sha256sum | cut -d' ' -f1
+ dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot --no-tablespaces --compact --skip-comments --skip-extended-insert --order-by-primary --no-create-info vintara_crm' | sha256sum | cut -d' ' -f1
 }
 preserved > "$release/history-before.sha256"
 maintenance=0
@@ -29,7 +29,7 @@ rollback() {
  trap - ERR
  echo "Update failed. Restoring previous code, image and database."
  dc stop web || true
- tar -xzf "$release/code.tar.gz" -C /opt/terra-nostra
+ tar -xzf "$release/code.tar.gz" -C /opt/vintara
  if [ "$maintenance" = 1 ]; then
   gzip -dc "$release/database.sql.gz" | dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysql -uroot'
  fi
@@ -41,14 +41,14 @@ rollback() {
  exit "$status"
 }
 trap rollback ERR
-tar -xzf /tmp/vintara-release.tar.gz -C /opt/terra-nostra
+tar -xzf /tmp/vintara-release.tar.gz -C /opt/vintara
 dc build web
 dc run --rm --no-deps --entrypoint php web /opt/phoenix/lint-vintara.php
 # Pause public checkout for the short migration and verification window.
 dc stop proxy web
 preserved > "$release/history-before.sha256"
 # Refresh snapshot with checkout stopped, so rollback cannot lose an intervening order.
-dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot --single-transaction --no-tablespaces --add-drop-database --databases phoenix terra_nostra_crm' | gzip > "$release/database.sql.gz"
+dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot --single-transaction --no-tablespaces --add-drop-database --databases phoenix vintara_crm' | gzip > "$release/database.sql.gz"
 gzip -t "$release/database.sql.gz"
 maintenance=1
 dc run --rm --no-deps --entrypoint php web /opt/phoenix/vintara.php

@@ -3,10 +3,10 @@ Set-Location -LiteralPath $PSScriptRoot
 $logPath = Join-Path $PSScriptRoot 'azure/vintara-deploy.log'
 Start-Transcript -LiteralPath $logPath -Force | Out-Null
 try {
-$sshArgs = @('-i', 'azure/private/terra-nostra', '-o', 'UserKnownHostsFile=azure/private/known_hosts', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15')
-$target = 'azureuser@20.230.232.196'
+$sshArgs = @('-i', 'azure/private/vintara', '-o', 'UserKnownHostsFile=azure/private/known_hosts', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15')
+$target = 'azureuser@20.3.229.69'
 Write-Host 'Checking Azure SSH access...'
-& ssh @sshArgs $target 'test -f /opt/terra-nostra/azure/cloud.env && command -v docker'
+& ssh @sshArgs $target 'test -f /opt/vintara/azure/cloud.env && command -v docker'
 if ($LASTEXITCODE -ne 0) { throw 'Cannot connect to Azure. Check the VM is running and the SSH rule allows your current public IP. No remote changes were made.' }
 & tar -czf azure/vintara-release.tar.gz Dockerfile docker branding
 if ($LASTEXITCODE -ne 0) { throw 'Cannot package release.' }

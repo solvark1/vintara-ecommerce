@@ -1,4 +1,4 @@
-# Terra Nostra · Proyecto IF6201
+# Vintara · Proyecto IF6201
 
 ## Abrir la tienda
 - Tienda: http://localhost:8082/
@@ -11,7 +11,7 @@ Detener.cmd detiene solamente este proyecto. Los datos se conservan en los volú
 
 ## Qué incluye
 - Phoenix Cart v1.1.0.8, PHP 8.3 con Apache y una base MySQL 8.0 independiente.
-- Identidad Terra Nostra: logo propio en SVG, colores verdes y crema, nueva portada y textos principales en español.
+- Identidad Vintara: logo propio en SVG, colores verdes y crema, nueva portada y textos principales en español.
 - 18 productos activos con fotos ilustrativas y 3 categorías. Los 9 ejemplos originales se conservan inactivos.
 - 40 clientes ficticios de las 7 provincias de Costa Rica.
 - 240 pedidos ficticios en un período de 180 días, con productos, cantidades, envío, total e historial.
@@ -29,7 +29,7 @@ Detener.cmd detiene solamente este proyecto. Los datos se conservan en los volú
 
 ## Repetir la carga
 Haz doble clic en Cargar-Datos-Demo.cmd con la tienda encendida.
-La carga se ejecuta automáticamente en el primer inicio y queda registrada como terra-nostra-v1.
+La carga se ejecuta automáticamente en el primer inicio y queda registrada como vintara-v1.
 Volver a ejecutarla informa que ya fue cargada: no duplica registros, no altera tus ediciones y no repone registros eliminados manualmente.
 Las fechas quedan ancladas al día de la primera carga (registrado en demo_seed_runs); no se inventan nuevas ventas cada día.
 Para generar otra temporada o cambiar el volumen de datos se debe preparar otra versión del seeder, conservando esta carga.
@@ -49,12 +49,12 @@ Los datos visibles no llevan etiquetas DEMO. Los correos y direcciones siguen si
 - branding/localize.py y branding/finish-localization.py: regeneran las traducciones y el menú sobre el código original.
 - docker/verify-demo.php: comprueba relaciones entre tablas, totales de pedidos y cantidades esperadas.
 - backups/antes-personalizacion.sql: respaldo previo a esta personalización.
-- backups/terra-nostra-demo.sql: respaldo posterior con datos ficticios e identidad aplicada.
+- backups/vintara-demo.sql: respaldo posterior con datos ficticios e identidad aplicada.
 
 El panel y algunas pantallas de Phoenix Cart conservan textos en inglés; se personalizaron los textos principales de la tienda.
 La configuración de identidad se aplica una sola vez por versión, para conservar cambios que hagas luego en el panel.
 Para aplicar cambios en archivos: docker compose up -d --build --wait
-Los archivos del volumen de imágenes se gestionan aparte; el logo de Terra Nostra se sincroniza en cada inicio.
+Los archivos del volumen de imágenes se gestionan aparte; el logo de Vintara se sincroniza en cada inicio.
 
 ## Comandos útiles desde esta carpeta
 - Iniciar o reconstruir: docker compose up -d --build --wait

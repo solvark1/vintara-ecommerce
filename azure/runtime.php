@@ -2,8 +2,8 @@
 // Runtime configuration for the public VM. Does not change the local development environment.
 if (PHP_SAPI !== 'cli') exit;
 if (getenv('APP_ENV') !== 'azure') exit;
-file_put_contents('/etc/apache2/conf-enabled/terra-nostra-proxy.conf', "ServerName localhost\nServerTokens Prod\nServerSignature Off\nSetEnvIf X-Forwarded-Proto \"^https$\" HTTPS=on\n");
-file_put_contents('/usr/local/etc/php/conf.d/zz-terra-nostra.ini', "display_errors=Off\nlog_errors=On\nexpose_php=Off\nsession.cookie_httponly=On\n");
+file_put_contents('/etc/apache2/conf-enabled/vintara-proxy.conf', "ServerName localhost\nServerTokens Prod\nServerSignature Off\nSetEnvIf X-Forwarded-Proto \"^https$\" HTTPS=on\n");
+file_put_contents('/usr/local/etc/php/conf.d/zz-vintara.ini', "display_errors=Off\nlog_errors=On\nexpose_php=Off\nsession.cookie_httponly=On\n");
 mysqli_report(MYSQLI_REPORT_ERROR|MYSQLI_REPORT_STRICT);
 $db=new mysqli(getenv('DB_HOST'),getenv('DB_USER'),getenv('DB_PASSWORD'),getenv('DB_NAME'));
 $db->set_charset('utf8mb4');
