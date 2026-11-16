@@ -52,16 +52,17 @@ dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot --single-
 gzip -t "$release/database.sql.gz"
 maintenance=1
 dc run --rm --no-deps --entrypoint php web /opt/phoenix/vintara.php
+dc run --rm --no-deps --entrypoint php web /opt/phoenix/identity.php
 dc run --rm --no-deps --entrypoint php web /opt/phoenix/verify-vintara.php
 preserved > "$release/history-after.sha256"
 cmp "$release/history-before.sha256" "$release/history-after.sha256"
 # Exercise the normal entrypoint after the additive migration.
 dc up -d --no-deps --no-build --wait web
 dc exec -T web curl -fsS http://localhost/index.php > "$release/home.html"
-grep -q 'VINTARA' "$release/home.html"
-grep -q 'images/vintara/hero.svg' "$release/home.html"
+grep -q 'TERRA NOSTRA' "$release/home.html"
+grep -q 'images/vintara/terra-nostra-hero.svg' "$release/home.html"
 dc exec -T web curl -fsS http://localhost/products_new.php > "$release/catalog.html"
-grep -q 'VIN\|vintara/vin-' "$release/catalog.html"
+grep -q 'vintara/terra-vin-' "$release/catalog.html"
 # Idempotency: a second application must leave the catalog byte-for-byte unchanged.
 catalog_hash() {
  dc exec -T db sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" mysqldump -uroot --no-tablespaces --compact --skip-comments --skip-extended-insert --order-by-primary --no-create-info phoenix products products_description products_to_categories categories categories_description vintara_wines configuration' | sha256sum | cut -d' ' -f1

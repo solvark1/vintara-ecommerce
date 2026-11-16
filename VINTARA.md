@@ -1,3 +1,7 @@
+# Identidad actual: Terra Nostra, tienda de vinos de la propuesta de CONTI
+
+Actualización del 15 de noviembre de 2026: logo y marca comercial del documento aplicados en la tienda. CONTI es el proveedor tecnológico. Se mantienen los nombres técnicos de infraestructura Vintara; no se recrean recursos ni se cambian bases de datos por este cambio visual.
+
 # Vintara S.A. — despliegue y estado
 
 Actualizado el 12 de noviembre de 2026 (Costa Rica).

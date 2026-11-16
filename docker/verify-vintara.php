@@ -4,7 +4,7 @@ mysqli_report(MYSQLI_REPORT_ERROR|MYSQLI_REPORT_STRICT);
 $db=new mysqli(getenv('DB_HOST'),getenv('DB_USER'),getenv('DB_PASSWORD'),getenv('DB_NAME'));
 $db->set_charset('utf8mb4');
 function checkv(bool $ok,string $message):void { if(!$ok)throw new RuntimeException($message); echo "OK: $message\n"; }
-checkv($db->query("SELECT configuration_value FROM configuration WHERE configuration_key='STORE_NAME'")->fetch_assoc()['configuration_value']==='Vintara S.A.','Store identity');
+checkv($db->query("SELECT configuration_value FROM configuration WHERE configuration_key='STORE_NAME'")->fetch_assoc()['configuration_value']==='Terra Nostra','Store identity');
 checkv((int)$db->query('SELECT COUNT(*) n FROM vintara_wines')->fetch_assoc()['n']===18,'18 wine profiles');
 checkv((int)$db->query('SELECT COUNT(DISTINCT category) n FROM vintara_wines')->fetch_assoc()['n']===4,'4 wine categories');
 checkv((int)$db->query('SELECT COUNT(*) n FROM vintara_wines v JOIN products p USING(products_id) WHERE p.products_status=1 AND p.products_price>0 AND p.products_quantity>0')->fetch_assoc()['n']===18,'18 purchasable wines with prices and stock');

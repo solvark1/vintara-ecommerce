@@ -1,6 +1,6 @@
-# Vintara — e-commerce de vinos
+# Terra Nostra — e-commerce de vinos
 
-Proyecto académico IF6201: adaptación de Phoenix Cart para Vintara S.A., propuesta de R&R Technology.
+Proyecto académico IF6201: adaptación de Phoenix Cart para Terra Nostra, propuesta de CONTI.
 
 Tienda publicada: https://vintara-if6201-508832.westus2.cloudapp.azure.com/
 
@@ -17,7 +17,7 @@ Abrir http://localhost:8082 y http://localhost:8082/admin/ (usuario `admin`, con
 ## Estructura
 
 - `source/`: código base Phoenix Cart y licencia original.
-- `branding/`: identidad, traducciones e imágenes de Vintara.
+- `branding/`: identidad, traducciones e imágenes de Terra Nostra.
 - `docker/`: inicialización, migraciones y verificaciones del catálogo.
 - `azure/`: infraestructura y scripts operativos del despliegue actual.
 - `crm/`: simulación de CRM y verificaciones.
@@ -34,3 +34,7 @@ No hay pipeline de despliegue ni secretos configurados en GitHub. Los cambios pu
 No se incluyen contraseñas, claves SSH, configuraciones generadas, copias SQL de clientes ni respaldos. Los SQL originales del instalador sí se incluyen para permitir una instalación nueva. No subir archivos de `azure/private/`, `.env`, `cloud.env` ni `crm.env`.
 
 El catálogo y las semillas son datos ficticios para demostración. ETL diario, visualizaciones Power BI/Tableau y módulos ML/LLM siguen pendientes. Se conserva la licencia de Phoenix Cart; revisar sus condiciones antes de distribuir derivados.
+
+## Identidad comercial
+
+CONTI es el proveedor de tecnología y servicios en la nube. Terra Nostra es la tienda de vinos cliente. El logo de la tienda proviene de la propuesta compartida en Google Docs. Los identificadores técnicos `vintara` se conservan para mantener la continuidad de infraestructura y datos; no representan la marca comercial actual.

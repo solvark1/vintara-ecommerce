@@ -19,7 +19,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Cannot upload deployment script.' }
 if ($LASTEXITCODE -ne 0) { throw 'Deployment did not complete. Review the output; the server script attempts rollback automatically.' }
 $url = 'https://vintara-if6201-508832.westus2.cloudapp.azure.com/'
 $response = Invoke-WebRequest -Uri $url -UseBasicParsing
-if ($response.StatusCode -ne 200 -or $response.Content -notmatch 'VINTARA') { throw 'Public HTTPS verification failed.' }
+if ($response.StatusCode -ne 200 -or $response.Content -notmatch 'TERRA NOSTRA') { throw 'Public HTTPS verification failed.' }
 Write-Host "Vintara is published: $url" -ForegroundColor Green
 } finally {
     Stop-Transcript | Out-Null

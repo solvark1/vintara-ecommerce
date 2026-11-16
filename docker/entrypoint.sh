@@ -6,4 +6,5 @@ php /opt/phoenix/customize.php
 php /opt/phoenix/refine.php
 php /opt/phoenix/azure-runtime.php
 php /opt/phoenix/vintara.php
+php /opt/phoenix/identity.php
 exec docker-php-entrypoint "$@"

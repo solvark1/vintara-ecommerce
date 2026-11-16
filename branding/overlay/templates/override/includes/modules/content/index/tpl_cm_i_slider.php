@@ -3,13 +3,13 @@
  <div class="tn-intro"><span>VINOS CON HISTORIA</span><span>Una botella. Mil encuentros.</span></div>
  <section class="tn-hero" aria-labelledby="tn-hero-title">
   <div class="tn-hero-copy">
-   <p class="tn-eyebrow">LA SELECCIÓN VINTARA</p>
+   <p class="tn-eyebrow">LA SELECCIÓN TERRA NOSTRA</p>
    <h1 id="tn-hero-title">Del viñedo<br>a tu <em>copa.</em></h1>
    <p class="tn-hero-description">Cada origen tiene una historia. Descubrí tintos, blancos, rosados y espumantes para acompañar tus mejores momentos.</p>
    <a class="btn btn-success tn-cta" href="<?= $catalogUrl ?>">Explorar los vinos <span aria-hidden="true">↗</span></a>
    <div class="tn-hero-note">Con datos que transforman la experiencia.</div>
   </div>
-  <div class="tn-hero-photo"><img src="images/vintara/hero.svg" alt="Ilustración de un vino Reserva del Valle de Vintara junto a una copa" fetchpriority="high"></div>
+  <div class="tn-hero-photo"><img src="images/vintara/terra-nostra-hero.svg" alt="Ilustración de un vino Reserva del Valle de Terra Nostra junto a una copa" fetchpriority="high"></div>
  </section>
  <div class="tn-values" aria-label="Nuestra propuesta">
   <div><span class="tn-value-number">01</span><span><strong>Conocé su origen</strong><small>Uva, añada, región y bodega</small></span></div>

@@ -16,7 +16,7 @@
     "quantity": 39,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-001.png"
+    "image": "vintara/terra-vin-001.png"
   },
   {
     "name": "Altura Andina",
@@ -35,7 +35,7 @@
     "quantity": 42,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-002.png"
+    "image": "vintara/terra-vin-002.png"
   },
   {
     "name": "Sendero de Roble",
@@ -54,7 +54,7 @@
     "quantity": 45,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-003.png"
+    "image": "vintara/terra-vin-003.png"
   },
   {
     "name": "Brisa Austral",
@@ -73,7 +73,7 @@
     "quantity": 48,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-004.png"
+    "image": "vintara/terra-vin-004.png"
   },
   {
     "name": "Luna de Toscana",
@@ -92,7 +92,7 @@
     "quantity": 51,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-005.png"
+    "image": "vintara/terra-vin-005.png"
   },
   {
     "name": "Noche del Ródano",
@@ -111,7 +111,7 @@
     "quantity": 54,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-006.png"
+    "image": "vintara/terra-vin-006.png"
   },
   {
     "name": "Costa de Luz",
@@ -130,7 +130,7 @@
     "quantity": 57,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-007.png"
+    "image": "vintara/terra-vin-007.png"
   },
   {
     "name": "Sol de los Andes",
@@ -149,7 +149,7 @@
     "quantity": 60,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-008.png"
+    "image": "vintara/terra-vin-008.png"
   },
   {
     "name": "Jardín del Rin",
@@ -168,7 +168,7 @@
     "quantity": 63,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-009.png"
+    "image": "vintara/terra-vin-009.png"
   },
   {
     "name": "Orilla Atlántica",
@@ -187,7 +187,7 @@
     "quantity": 66,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-010.png"
+    "image": "vintara/terra-vin-010.png"
   },
   {
     "name": "Amanecer Veneto",
@@ -206,7 +206,7 @@
     "quantity": 69,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-011.png"
+    "image": "vintara/terra-vin-011.png"
   },
   {
     "name": "Atardecer Mediterráneo",
@@ -225,7 +225,7 @@
     "quantity": 72,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-012.png"
+    "image": "vintara/terra-vin-012.png"
   },
   {
     "name": "Pétalo de Provence",
@@ -244,7 +244,7 @@
     "quantity": 75,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-013.png"
+    "image": "vintara/terra-vin-013.png"
   },
   {
     "name": "Rosa de los Andes",
@@ -263,7 +263,7 @@
     "quantity": 78,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-014.png"
+    "image": "vintara/terra-vin-014.png"
   },
   {
     "name": "Brillo de Veneto",
@@ -282,7 +282,7 @@
     "quantity": 81,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-015.png"
+    "image": "vintara/terra-vin-015.png"
   },
   {
     "name": "Celebración Brut",
@@ -301,7 +301,7 @@
     "quantity": 84,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-016.png"
+    "image": "vintara/terra-vin-016.png"
   },
   {
     "name": "Estrella Rosé",
@@ -320,7 +320,7 @@
     "quantity": 87,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-017.png"
+    "image": "vintara/terra-vin-017.png"
   },
   {
     "name": "Éclat Reserva",
@@ -339,6 +339,6 @@
     "quantity": 90,
     "volume_ml": 750,
     "storage": "Conservar en un lugar fresco y oscuro, sin cambios bruscos de temperatura.",
-    "image": "vintara/vin-018.png"
+    "image": "vintara/terra-vin-018.png"
   }
 ]

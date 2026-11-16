@@ -17,3 +17,5 @@ COPY azure/runtime.php /opt/phoenix/azure-runtime.php
 COPY docker/vintara.php docker/vintara-catalog.json /opt/phoenix/
 COPY docker/verify-vintara.php /opt/phoenix/
 COPY docker/lint-vintara.php /opt/phoenix/
+
+COPY docker/identity.php /opt/phoenix/identity.php

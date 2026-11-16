@@ -22,7 +22,7 @@ const TEXT_ALL_MANUFACTURERS = 'All Manufacturers';
 
 // seo
 if ( ($category_depth == 'top') && (!isset($_GET['manufacturers_id'])) ) {
-  define('META_SEO_TITLE', 'Del viñedo a tu copa | Vintara');
-  define('META_SEO_DESCRIPTION', 'Descubrí vinos tintos, blancos, rosados y espumantes. Uvas, añadas, regiones y maridajes en Vintara.');
+  define('META_SEO_TITLE', 'Del viñedo a tu copa | Terra Nostra');
+  define('META_SEO_DESCRIPTION', 'Descubrí vinos tintos, blancos, rosados y espumantes. Uvas, añadas, regiones y maridajes en Terra Nostra.');
 }
 
