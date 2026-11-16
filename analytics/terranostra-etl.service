@@ -1,0 +1,15 @@
+[Unit]
+Description=CONTI - Terra Nostra daily data lake ETL
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/vintara/analytics
+ExecStart=/usr/bin/python3 /opt/vintara/analytics/etl.py --trigger systemd
+TimeoutStartSec=600
+UMask=0077
+Nice=10
+NoNewPrivileges=true
+PrivateTmp=true

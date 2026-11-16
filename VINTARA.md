@@ -43,7 +43,7 @@ Las credenciales se conservan privadas. No se modificaron contraseñas ni se hab
 
 ## Estado del curso
 
-E-commerce y bases en Azure publicados. ETL diario de tienda + CRM + CSV, tableros Power BI/Tableau, ML/LLM y valor agregado tecnológico siguen pendientes. El respaldo diario no es ETL. El CRM es una base simulada; no tiene panel web propio.
+E-commerce y bases en Azure publicados. Data Lake y ETL diario de tienda + CRM + CSV implementados el 15 de noviembre de 2026; ver analytics/README.md. Tableros Power BI/Tableau, ML/LLM y valor agregado tecnológico siguen pendientes. El respaldo diario no es ETL. El CRM es una base simulada; no tiene panel web propio.
 
 El catálogo y el historial son académicos y sintéticos. Las compras se adaptaron al catálogo de vinos conservando importes históricos; no representan precios históricos reales de vino.
 

@@ -16,4 +16,4 @@ Los respaldos diarios a las 08:00 UTC (02:00 Costa Rica) se ejecutan mientras la
 
 Para publicar código, usar `../Actualizar-Vintara-Azure.ps1`. No ejecutar `deploy.sh` sobre la instalación existente: corresponde a una restauración inicial. Las claves y variables necesarias están en `private/`, excluidas del repositorio público. No copiar secretos en issues, commits o capturas.
 
-La tienda es académica: no realiza cobros ni envía correo real. ETL, BI e IA siguen pendientes; los respaldos no sustituyen al ETL.
+La tienda es académica: no realiza cobros ni envía correo real. El ETL diario está implementado en ../analytics/ y usa los contenedores privados fuentes y datalake. BI e IA siguen pendientes; el respaldo y el ETL son procesos separados.

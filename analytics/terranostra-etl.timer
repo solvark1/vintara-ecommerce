@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh Terra Nostra data lake daily at 03:00 Costa Rica
+
+[Timer]
+OnCalendar=*-*-* 09:00:00 UTC
+Persistent=true
+RandomizedDelaySec=0
+Unit=terranostra-etl.service
+
+[Install]
+WantedBy=timers.target

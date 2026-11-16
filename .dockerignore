@@ -24,3 +24,6 @@ site-source.tar.gz
 
 azure/crm.env
 crm/private/
+
+analytics/private/
+analytics/**/__pycache__/

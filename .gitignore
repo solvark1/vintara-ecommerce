@@ -29,3 +29,7 @@ azure/*.json
 .vscode/
 __pycache__/
 *.pyc
+
+# Private ETL snapshots, CSV source data, run evidence and BI exports
+analytics/private/
+analytics/*.tar.gz
