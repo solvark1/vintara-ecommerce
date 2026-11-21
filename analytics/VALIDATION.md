@@ -36,3 +36,14 @@ Se generó una exportación privada de 15 tablas CSV (siete Silver y ocho Gold).
 Crear el reporte Power BI/Tableau, configurar su acceso y refresco si se publica, implementar ML/LLM y el valor agregado acordado con el profesor. Los archivos Gold y su guía no sustituyen a un dashboard terminado. Las preguntas requieren aval docente si no se ha obtenido por otra vía.
 
 El servicio permanente terranostra-etl.service también se ejecutó con su configuración definitiva: Result=success, ExecMainStatus=0, carga 20261116T045806Z-112f1240. Esa ejecución se inició manualmente para validar el servicio; el disparo automático se verificó por separado mediante el temporizador de prueba descrito arriba.
+
+## Carpeta fija latest para Power BI, 20 de noviembre de 2026
+
+- Versión 1.1.0 desplegada en el servicio permanente, conservando el timer diario de las 03:00 de Costa Rica. La carga diaria anterior `20261120T090003Z-e3679eb1` ya estaba verificada antes de actualizar el código.
+- Las 15 pruebas pasaron en Linux. Se probaron la sustitución sin tablas obsoletas, la corrupción de origen, fallos de subida, fallo de promoción de carpeta, fallo de confirmación del puntero, respuesta de renombrado perdida, recuperación tras interrupción y protección de carpetas ajenas sin manifiesto.
+- Dos ejecuciones reales del servicio, iniciadas manualmente para probar la integración: `20261121T035517Z-5ef4f90c` y `20261121T035544Z-cbe6c8b4` (identificadores UTC; ambas corresponden al 20 de noviembre en Costa Rica). No se presentan como disparos del timer.
+- En ambas se verificaron por SHA256 los 25 archivos del snapshot original y las 15 tablas de `latest`: siete Silver y ocho Gold. La segunda publicación sustituyó la primera manteniendo las rutas y cantidad de tablas.
+- El manifiesto de `latest` y el puntero `latest.json` coinciden en run_id y publication_id. `verify.py` coteja además las filas y las conciliaciones de ventas.
+- La tienda y los tres contenedores siguieron activos; el nuevo publicador no modifica las fuentes ni reinicia Docker. El código anterior quedó respaldado en la carpeta privada del servidor.
+
+Este cambio prepara una fuente estable para Power BI; no configura un reporte, credenciales de Power BI Service ni su refresco programado. Ver `POWER_BI_LATEST.md`.

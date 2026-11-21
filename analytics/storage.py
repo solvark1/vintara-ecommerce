@@ -15,7 +15,7 @@ class BlobStore:
         self.token = None
         self.expires = 0
 
-    def request(self, container, name='', method='GET', data=None, extra=None, query=''):
+    def request(self, container, name='', method='GET', data=None, extra=None, query='', endpoint='blob'):
         if time.time() + 120 >= self.expires:
             req = urllib.request.Request(
                 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fstorage.azure.com%2F',
@@ -24,9 +24,10 @@ class BlobStore:
                 identity = json.load(response)
             self.token = identity['access_token']
             self.expires = int(identity['expires_on'])
-        url = self.base + '/' + container + '/' + urllib.parse.quote(name, safe='/') + query
+        base = self.base if endpoint == 'blob' else self.base.replace('.blob.', '.dfs.')
+        url = base + '/' + container + '/' + urllib.parse.quote(name, safe='/') + query
         headers = {'Authorization': 'Bearer ' + self.token, 'x-ms-version': '2023-11-03', **(extra or {})}
-        if method == 'PUT':
+        if method == 'PUT' and endpoint == 'blob':
             headers.update({'x-ms-blob-type': 'BlockBlob', 'Content-MD5': base64.b64encode(hashlib.md5(data).digest()).decode()})
         for attempt in range(4):
             try:
@@ -73,3 +74,20 @@ class BlobStore:
             marker = tree.findtext('NextMarker')
             if not marker:
                 return sorted(result)
+
+    def rename_directory(self, container, source, destination):
+        """Move a small prepared publication; never overwrite a destination."""
+        for path in (source, destination):
+            if not path or path.startswith('/') or any(p in ('', '.', '..') for p in path.split('/')):
+                raise ValueError('Unsafe directory path')
+        parent = destination.rpartition('/')[0]
+        if parent:
+            try:
+                self.request(container, parent, 'PUT', b'',
+                             {'If-None-Match': '*'}, '?resource=directory', endpoint='dfs')
+            except urllib.error.HTTPError as exc:
+                if exc.code not in (409, 412):
+                    raise
+        self.request(container, destination, 'PUT', b'',
+                     {'x-ms-rename-source': '/' + container + '/' + urllib.parse.quote(source, safe='/'),
+                      'If-None-Match': '*'}, '?mode=posix', endpoint='dfs')

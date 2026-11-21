@@ -9,6 +9,7 @@ Cuenta Azure: `stvintara508832`, grupo `rg-vintara`.
 - Contenedor privado `fuentes`: `reviews/reviews_academic_v1.csv`, 180 comentarios explícitamente ficticios (`is_synthetic=1`). Las plataformas mencionadas son escenarios académicos, no comentarios extraídos de redes sociales reales.
 - Contenedor privado `datalake`: capas `bronze`, `silver`, `gold`, manifiestos `runs`, errores `audit` y el puntero `latest.json`.
 - Servidor: `/opt/vintara/analytics`. Archivos de ejecución y exportaciones: `analytics/private/`, excluidos de Git y del contexto Docker.
+- Publicación fija para Power BI: `datalake/latest/gold/` (ocho tablas), `datalake/latest/silver/` (siete tablas) y `datalake/latest/manifest.json`. Ver [conexión y actualización](POWER_BI_LATEST.md).
 
 En el portal: `rg-vintara` → `stvintara508832` → Almacenamiento de datos → Contenedores. El acceso a los datos requiere un rol de datos; Colaborador del grupo por sí solo no concede lectura de blobs cuando las claves compartidas están deshabilitadas. No hacer públicos los contenedores. Los archivos se pueden exportar por el acceso SSH autorizado.
 
@@ -37,6 +38,10 @@ Azure se autentica mediante la identidad administrada de `vm-vintara`. Tiene Sto
 4. Construir dimensiones, hechos y agregados. Las reseñas idénticas se deduplican; las filas inválidas quedan en `quarantine.csv` y bloquean la publicación de esa ejecución.
 5. Subir y descargar cada archivo para comparar SHA256. Guardar el manifiesto completo con cantidades, parámetros y resultados.
 6. Actualizar `latest.json` al final con condición ETag. Si algo falla, el puntero conserva la última ejecución correcta. No combinar archivos de distintos run_id.
+
+Desde la versión 1.1.0, antes de confirmar el puntero se preparan y verifican las 15 tablas analíticas en una carpeta temporal privada. La carpeta completa pasa a `latest` mediante renombrados de Data Lake Gen2, con un diario durable y recuperación si se interrumpe la publicación. `latest` mantiene nombres fijos y sustituye el conjunto completo: no acumula ejecuciones ni tablas retiradas. Se excluyen Bronze y cuarentena. La publicación anterior queda en `_latest_previous/<publication_id>/` como recuperación; el historial original en `*/runs/` se conserva.
+
+El intercambio de carpetas deja un intervalo corto en que `latest` puede no estar disponible. No es una transacción de lectura de varios archivos: programar Power BI después del ETL (por ejemplo, 03:15 de Costa Rica), no durante su publicación. Si se interrumpe el proceso, la siguiente ejecución recupera el diario antes de extraer datos.
 
 Cada carga es un snapshot completo e inmutable: repetirla no inserta ni duplica compras. Los archivos de diferentes ejecuciones se conservan para auditoría y no se deben concatenar como si fueran ventas distintas.
 

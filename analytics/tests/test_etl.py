@@ -93,8 +93,8 @@ class BusinessTests(unittest.TestCase):
         class FailingStore:
             def __init__(self):
                 self.latest = old
-            def optional(self, *args):
-                return self.latest, 'prior-etag'
+            def optional(self, container, name):
+                return (self.latest, 'prior-etag') if name == 'latest.json' else (None, None)
             def list(self, *args):
                 return ['reviews/test.csv']
             def get(self, *args):

@@ -17,11 +17,12 @@ from zoneinfo import ZoneInfo
 from extract import extract
 from model import REVIEW_FIELDS, SALE_STATUSES, transform
 from storage import BlobStore
+from publish_latest import publish_latest, recover_latest
 
 ROOT = pathlib.Path(__file__).resolve().parent
 PRIVATE = ROOT / 'private'
 ACCOUNT = 'stvintara508832'
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 
 def json_bytes(value):
@@ -75,6 +76,7 @@ def run(trigger, store=None):
                                'bytes': len(data), 'rows': rows})
 
     try:
+        recover_latest(cloud)
         _, previous_etag = cloud.optional('datalake', 'latest.json')
         snapshot = extract()
         for name, rows in snapshot.items():
@@ -96,7 +98,7 @@ def run(trigger, store=None):
         silver, gold, quarantine, quality = transform(snapshot, reviews, as_of)
         report['source_files'] = source_files
         report['quality'] = quality
-        code_hash = hashlib.sha256(b''.join((ROOT / file).read_bytes() for file in ['etl.py', 'extract.py', 'model.py', 'storage.py'])).hexdigest()
+        code_hash = hashlib.sha256(b''.join((ROOT / file).read_bytes() for file in ['etl.py', 'extract.py', 'model.py', 'storage.py', 'publish_latest.py'])).hexdigest()
         fingerprint = {'source': snapshot, 'reviews': reviews, 'as_of': as_of.isoformat(),
                        'statuses': SALE_STATUSES, 'version': VERSION, 'code_hash': code_hash}
         report['code_sha256'] = code_hash
@@ -119,9 +121,8 @@ def run(trigger, store=None):
         pointer = {'run_id': run_id, 'manifest': manifest_path, 'manifest_sha256': hashlib.sha256(manifest_data).hexdigest(),
                    'published_at_utc': report['finished_at_utc'], 'silver_prefix': f'silver/runs/{run_id}/',
                    'gold_prefix': f'gold/runs/{run_id}/', 'input_sha256': report['input_sha256']}
-        condition = ('If-Match', previous_etag) if previous_etag else ('If-None-Match', '*')
-        # No consumer is pointed at a partially uploaded or failed run.
-        cloud.put('datalake', 'latest.json', json_bytes(pointer), condition=condition)
+        # Publish the prepared folder and pointer together, with rollback/recovery.
+        pointer = publish_latest(cloud, report, pointer, previous_etag)
         temporary = PRIVATE / 'latest.json.tmp'
         temporary.write_bytes(json_bytes(pointer))
         temporary.replace(PRIVATE / 'latest.json')
