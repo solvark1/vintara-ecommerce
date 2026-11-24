@@ -85,7 +85,7 @@ La carpeta del escritorio por sí sola no incluye los datos actuales de los vol�
 La tienda se publica únicamente en 127.0.0.1:8082. La base no expone un puerto de Windows.
 El instalador está fuera del directorio público. Los correos están deshabilitados en la configuración local.
 Antes de Azure: ajustar URL, HTTPS, secretos, respaldos y decidir si se conserva la carga demo. No es aún una tienda de producción.
-El CRM, el data lake, el ETL diario y la conexión con Power BI quedan para etapas posteriores. El dashboard local de IA descrito arriba es una demostración académica con datos mock.
+El CRM, el data lake, ETL diario, Power BI e IA se implementarán en etapas posteriores. Se agrega el módulo de IA con datos mock para simular business Intelligence.
 
 ## Verificación realizada
 - Contenedores healthy, catálogo y carrito comprobados en navegador.
