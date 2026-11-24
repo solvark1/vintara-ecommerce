@@ -27,6 +27,19 @@ Detener.cmd detiene solamente este proyecto. Los datos se conservan en los volú
 4. Clientes: http://localhost:8082/admin/customers.php
 5. Abre un pedido y consulta Summary, Products y Status History para ver sus detalles.
 
+## Dashboard local de IA
+El panel administrativo incluye el botón **Analytics IA**, que abre http://localhost:8501. El dashboard es un proceso local de Python independiente de Docker y usa CSV mock.
+
+1. Instala las dependencias una vez desde PowerShell:
+   ```powershell
+   cd C:\vintara-ecommerce\modulo-IA
+   python -m pip install -r requirements-sentiment.txt
+   ```
+2. Haz doble clic en `modulo-IA\Iniciar-Analytics.cmd`.
+3. Entra en el panel administrativo y pulsa **Analytics IA** (o abre http://localhost:8501 directamente).
+
+La primera ejecución necesita internet para descargar el modelo de análisis de sentimientos. Machine learning pronostica unidades vendidas; deep learning estima la probabilidad de recompra por segmento; el tercer gráfico clasifica comentarios con pysentimiento. Esta última sección es análisis de sentimientos, no un LLM generativo. Si acabas de actualizar el código, inicia con `Iniciar.cmd` para reconstruir la imagen de la tienda y mostrar el nuevo botón.
+
 ## Repetir la carga
 Haz doble clic en Cargar-Datos-Demo.cmd con la tienda encendida.
 La carga se ejecuta automáticamente en el primer inicio y queda registrada como vintara-v1.
@@ -72,7 +85,7 @@ La carpeta del escritorio por sí sola no incluye los datos actuales de los vol�
 La tienda se publica únicamente en 127.0.0.1:8082. La base no expone un puerto de Windows.
 El instalador está fuera del directorio público. Los correos están deshabilitados en la configuración local.
 Antes de Azure: ajustar URL, HTTPS, secretos, respaldos y decidir si se conserva la carga demo. No es aún una tienda de producción.
-El CRM, el data lake, ETL diario, Power BI e IA se implementarán en etapas posteriores.
+El CRM, el data lake, el ETL diario y la conexión con Power BI quedan para etapas posteriores. El dashboard local de IA descrito arriba es una demostración académica con datos mock.
 
 ## Verificación realizada
 - Contenedores healthy, catálogo y carrito comprobados en navegador.

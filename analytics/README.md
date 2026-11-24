@@ -1,6 +1,10 @@
 # Data Lake y ETL de Terra Nostra — CONTI
 
-Esta etapa integra la tienda MySQL, la base CRM y CSV ficticios de reseñas. No implementa todavía Power BI/Tableau ni un modelo ML/LLM.
+Esta etapa integra la tienda MySQL, la base CRM y CSV ficticios de reseñas. El dashboard local de IA descrito abajo es una demostración independiente; todavía no se conecta a las ventas reales ni a Power BI/Tableau.
+
+## Módulo de IA local
+
+El dashboard, los modelos de demostración, los datos mock y sus instrucciones se movieron a la carpeta raíz `modulo-IA/`. Consulta [su guía](../modulo-IA/README.md) para instalarlo y ejecutarlo. El módulo es independiente del ETL y no se conecta a las ventas reales ni a Power BI/Tableau.
 
 ## Dónde está
 
