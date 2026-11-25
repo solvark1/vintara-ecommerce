@@ -33,6 +33,7 @@
     <div class="col-12 col-lg-6 text-start text-lg-end align-self-center pb-1">
       <?=
       $Admin->button(GET_HELP, '', 'btn-dark me-2', GET_HELP_LINK, ['newwindow' => true]),
+      '<a class="btn btn-primary me-2" href="http://localhost:8501" target="_blank" rel="noopener">Analytics IA</a>',
       $admin_hooks->cat('extraButtons') ?>
       <?php
       if (count($languages) > 1) {
